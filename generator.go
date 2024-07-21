@@ -12,18 +12,22 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type DatabaseConfig struct {
+	Host     string `yml:"host"`
+	Port     int    `yml:"port"`
+	Dbname   string `yml:"dbname"`
+	Username string `yml:"username"`
+	Password string `yml:"password"`
+}
+
+type DirectoryConfig struct {
+	Ddl string `yml:"./dbbuild/ddl"`
+	Tbl string `yml:"./dbbuild/tbl"`
+}
+
 type Config struct {
-	Database *struct {
-		Host     string `yml:"host"`
-		Port     int    `yml:"port"`
-		Dbname   string `yml:"dbname"`
-		Username string `yml:"username"`
-		Password string `yml:"password"`
-	} `yml:"database"`
-	Directories *struct {
-		Ddl string `yml:"./dbbuild/ddl"`
-		Tbl string `yml:"./dbbuild/tbl"`
-	} `yml:"directories"`
+	Database    *DatabaseConfig  `yml:"database"`
+	Directories *DirectoryConfig `yml:"directories"`
 }
 
 type DbGenerator struct {
@@ -169,3 +173,18 @@ func (dbg *DbGenerator) BuildDatabase(sqlfiles []string) error {
 	}
 	return nil
 }
+
+/*
+	// Konfigurasi manual
+	gen.Config = &gopgdbgen.Config{
+		Database:    &gopgdbgen.DatabaseConfig{},
+		Directories: &gopgdbgen.DirectoryConfig{},
+	}
+	gen.Config.Database.Host = "localhost"
+	gen.Config.Database.Port = 5432
+	gen.Config.Database.Dbname = "tfidblocal"
+	gen.Config.Database.Username = "tfi"
+	gen.Config.Database.Password = "rahasia"
+	gen.Config.Directories.Ddl = path.Join(cwd, "dbbuild/ddl")
+	gen.Config.Directories.Tbl = path.Join(cwd, "dbbuild/tbl")
+*/
